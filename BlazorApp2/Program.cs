@@ -1,5 +1,7 @@
+using BlazorApp2.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,12 +13,24 @@ namespace BlazorApp2
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+		public static void Main(string[] args)
+		{
+			var host = CreateHostBuilder(args).Build();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+			var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+			using (var scope = scopeFactory.CreateScope())
+			{
+				var context = scope.ServiceProvider.GetRequiredService<PizzaContext>();
+				if (context.Database.EnsureCreated())
+				{
+					///confirma que foi criado
+				}
+			}
+			host.Run();
+		}
+
+
+		public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

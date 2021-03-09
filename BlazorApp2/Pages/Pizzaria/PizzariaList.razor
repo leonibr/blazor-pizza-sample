@@ -1,0 +1,86 @@
+﻿@page "/pizza/lista"
+@inject PizzaContext dbContext
+@using Microsoft.EntityFrameworkCore;
+
+<h3>Relação de Pizzas.</h3>
+<div class="row">
+    <div class="col-3">
+        <ul class="list-group">
+            <NavLink href="/pizza/nova" class="nav-link">
+                <li class="list-group-item">
+                    <span class="oi oi-plus"></span> Nova Pizza
+                </li>
+            </NavLink>
+        </ul>
+    </div>
+</div>
+
+@if (Pizzas.Count == 0)
+{
+    @semPizza()
+}
+else
+{
+    @foreach (var pizza in Pizzas)
+    {
+        <div class="list-pizza-item">
+            <img src="@pizza.ImageUrl" />
+            <div class="list-pizza-description">
+                <div class="list-pizza-text">
+                    <h5>
+                        @pizza.Nome
+                    </h5>
+                    <div>
+                        @pizza.Descricao
+                    </div>
+                </div>
+
+                <span class="list-pizza-price">
+                    @pizza.GetPrecoBaseFormato
+                </span>
+
+                <div class="list-pizza-action">
+                    <a class="btn btn-secondary" 
+                            href="@($"/pizza/{pizza.PizzaId}/edit")"
+                            title="Editar">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+                    <a class="btn btn-danger"
+                              href="@($"/pizza/{pizza.PizzaId}/delete")"
+                            title="Excluir">
+                        <span class="oi oi-trash"></span>
+                    </a>
+                </div>
+
+
+            </div>
+        </div>
+    }
+}
+
+
+
+@code {
+
+    List<Model.Pizza> Pizzas = new List<Model.Pizza>();
+
+
+    RenderFragment semPizza() => (
+    @<div class="alert alert-warning">
+        <b>Atenção</b>
+        <p>Não há pizzas cadastradas.</p>
+    </div>);
+
+
+
+    protected override void OnInitialized()
+    {
+        if (Pizzas.Count == 0)
+        {
+            Pizzas = dbContext
+                      .Pizzas
+                      .AsNoTracking()
+                      .ToList();
+        }
+    }
+}

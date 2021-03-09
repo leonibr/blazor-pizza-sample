@@ -19,15 +19,19 @@ a, .btn-link {
 }
 
 .valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+   
+    box-shadow: 0 0 0 0.1rem rgb(38 176 80 / 25%);
 }
 
 .invalid {
-    outline: 1px solid red;
+  
+    box-shadow: 0 0 0 0.18rem rgb(220 37 69 / 25%);
 }
 
+
 .validation-message {
-    color: red;
+    color: #dc3545;
+    font-size: 0.8rem;
 }
 
 #blazor-error-ui {
@@ -48,3 +52,17 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+
+
+
+.img-vazia {
+    border-radius: 8px;
+    border: 1px #ccc solid;
+    background: url('data:image/webp;base64,UklGRrwBAABXRUJQVlA4ILABAADQIgCdASosAcoAPp1Mn0ulpCKhpPV6GLATiWlu4WxhFzOxpigSyJMeWPCMnkBVwrn4jIk0426qvJ9IPgAiWeg8okrJaPzco3IepS0pZo5CzFmO7+HTj3uro5BiKOCWYVmNKo1VJflnaUxfle8PAIlMUZhYsIonF4eFQYTEUk/FILvl+aI4ghjHtCB526PwisoBF2sP8iq9Vjhi6cc6b6JZVomCkZ7g3N5cwUtTlVZoCDa9hyQ9Ir8SLKWeg9HQtm4zCROw1Nxf5rWk5vYmkcM+y+21Rt+dUGVSjMcNu47Jc/YOHwwbYdxbxnwWI2RvuFpvfjYbFX12gn5rIstI+baY835g26qvJ9HNvCVHtjPZ25mU39OQPZN/VZmZAIF2AAD+/mWdcUuDndgwVz3oxeqwWWljPhFBZmWA6/srq22gDZYnJgLGuwAgOjAXiQoAj7o+lDLACuMhdXdyrPF8LmQtC/ZGz3hCe/gAIVoO4v0F09yoS7LNMYAQWv0lBWHqhP4eu0px/RYfkFNFxZgSrt+9jNJ7jDe2hT/6s5wkvposFHYLAvFvVP2bfWaqZ13AAAA=');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    max-height: 120px;
+}

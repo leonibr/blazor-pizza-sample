@@ -1,0 +1,44 @@
+﻿
+.list-pizza-item {
+    display: flex;
+    flex-direction: row;
+    border: 1px #eee solid;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 6px;
+    transition: background-color .2s ease-in;
+}
+
+    .list-pizza-item:hover {
+        background-color: #eee;
+    }
+
+    .list-pizza-item > img {
+        width: 90px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+.list-pizza-description {
+    margin-left: 6px;
+    display: flex;
+    flex-direction: row;
+}
+
+.list-pizza-price {
+    display: block;
+    margin-left: 12px;
+    font-size: 1.5rem;
+}
+
+    .list-pizza-price::before {
+        content: 'R$ ';
+        font-size: 1rem;
+        font-weight: bold;
+        font-style: italic;
+    }
+
+.list-pizza-action {
+    margin-left: 2rem;
+    justify-self: flex-end;
+}

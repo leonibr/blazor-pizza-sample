@@ -1,0 +1,32 @@
+﻿@page "/pizza/{PizzaId:int}/delete"
+
+@inject PizzaContext dbContext
+@inject NavigationManager navigation
+
+<h3>Pizzaria Delete</h3>
+<div class="alert alert-warning">
+    <b>Atenção</b>
+    <p>
+        Deseja Excluir?
+        Pizza com código @PizzaId
+    </p>
+
+</div>
+<button class="btn btn-danger" @onclick="Exclui">
+    Confirma
+</button>
+
+@code {
+    [Parameter]
+    public int PizzaId { get; set; }
+
+    void Exclui()
+    {
+        var pizza = dbContext.Pizzas
+         .Where(c => c.PizzaId == PizzaId)
+         .FirstOrDefault();
+        dbContext.Pizzas.Remove(pizza);
+        dbContext.SaveChanges();
+        navigation.NavigateTo("/pizza/lista");
+    }
+}
