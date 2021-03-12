@@ -1,8 +1,12 @@
 using BlazorApp2.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,8 +33,28 @@ namespace BlazorApp2
         {
             services.AddDbContext<PizzaContext>(
                 option => option.UseSqlite("DataSource=bancopizza.db"));
+
+            services.AddDefaultIdentity<AppUser>()
+                    .AddRoles<IdentityRole>()
+                   .AddEntityFrameworkStores<PizzaContext>();
+
+          
+
+            services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("IsAdmin", policy =>
+                {
+                    policy.AddRequirements(new AdminEmailRequirement("admin.com"));
+                });
+            });
+
+            services.AddSingleton<IAuthorizationHandler, AdminEmailAuthHandler>();
+
             services.AddSingleton<WeatherForecastService>();
         }
 
@@ -53,11 +77,18 @@ namespace BlazorApp2
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+                
+
+
         }
     }
 }
