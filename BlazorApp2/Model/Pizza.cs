@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorApp2.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,5 +23,7 @@ namespace BlazorApp2.Model
 		public string ImageUrl { get; set; }
 
 		public string GetPrecoBaseFormato => PrecoBase.ToString("0.00");
+
+		public virtual ICollection<AppUser> Usuarios { get; set; }
 	}
 }

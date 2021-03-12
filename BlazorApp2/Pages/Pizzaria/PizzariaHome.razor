@@ -12,13 +12,18 @@
                 </li>
             </NavLink>
         </ul>
-        <ul class="list-group">
-            <NavLink href="/pizza/nova" class="nav-link">
-                <li class="list-group-item">
-                    <span class="oi oi-plus"></span> Nova Pizza
-                </li>
-            </NavLink>
-        </ul>
+        <AuthorizeView Policy="IsAdmin">
+            <Authorized>
+                <ul class="list-group">
+                    <NavLink href="/pizza/nova" class="nav-link">
+                        <li class="list-group-item">
+                            <span class="oi oi-plus"></span> Nova Pizza
+                        </li>
+                    </NavLink>
+                </ul>
+            </Authorized>
+            
+        </AuthorizeView>
     </div>
 </div>
 @code {

@@ -1,4 +1,5 @@
 ﻿using BlazorApp2.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorApp2.Data
 {
-    public class PizzaContext : DbContext
+    public class PizzaContext : IdentityDbContext
     {
 
         public PizzaContext(
