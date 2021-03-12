@@ -24,6 +24,6 @@ namespace BlazorApp2.Model
 
 		public string GetPrecoBaseFormato => PrecoBase.ToString("0.00");
 
-		public virtual ICollection<AppUser> Usuarios { get; set; }
+		public virtual ICollection<AppUserPizza> Usuarios { get; set; }
 	}
 }

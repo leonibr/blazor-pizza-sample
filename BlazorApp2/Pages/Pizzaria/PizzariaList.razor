@@ -1,5 +1,7 @@
 ﻿@page "/pizza/lista"
-@inject PizzaContext dbContext
+
+@inject IDbContextFactory<PizzaContext> DbFactory
+
 @using Microsoft.EntityFrameworkCore;
 
 <h3>Relação de Pizzas.</h3>
@@ -40,16 +42,29 @@ else
                 </span>
 
                 <div class="list-pizza-action">
-                    <a class="btn btn-secondary" 
-                            href="@($"/pizza/{pizza.PizzaId}/edit")"
-                            title="Editar">
-                        <span class="oi oi-pencil"></span>
-                    </a>
-                    <a class="btn btn-danger"
-                              href="@($"/pizza/{pizza.PizzaId}/delete")"
-                            title="Excluir">
-                        <span class="oi oi-trash"></span>
-                    </a>
+                    <AuthorizeView Policy="IsAdmin">
+                        <Authorized>
+                            <a class="btn btn-secondary"
+                               href="@($"/pizza/{pizza.PizzaId}/edit")"
+                               title="Editar">
+                                <span class="oi oi-pencil"></span>
+                            </a>
+                            <a class="btn btn-danger"
+                               href="@($"/pizza/{pizza.PizzaId}/delete")"
+                               title="Excluir">
+                                <span class="oi oi-trash"></span>
+                            </a>
+                        </Authorized>
+                    </AuthorizeView>
+                    <AuthorizeView>
+                        <Authorized>
+                            <a class="btn btn-warning"
+                               href="@($"/pizza/{pizza.PizzaId}/buy")"
+                               title="Compre agora">
+                                <span class="oi oi-dollar"></span>
+                            </a>
+                        </Authorized>
+                    </AuthorizeView>
                 </div>
 
 
@@ -75,6 +90,7 @@ else
 
     protected override void OnInitialized()
     {
+        using var dbContext = DbFactory.CreateDbContext();
         if (Pizzas.Count == 0)
         {
             Pizzas = dbContext

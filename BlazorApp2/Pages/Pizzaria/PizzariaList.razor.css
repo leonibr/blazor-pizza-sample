@@ -20,12 +20,20 @@
     }
 
 .list-pizza-description {
+    width: 100%;
     margin-left: 6px;
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-areas: "text price action";
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+
+}
+.list-pizza-text {
+    grid-area: text;
 }
 
 .list-pizza-price {
+    grid-area: price;
     display: block;
     margin-left: 12px;
     font-size: 1.5rem;
@@ -39,6 +47,7 @@
     }
 
 .list-pizza-action {
+    grid-area: action;
     margin-left: 2rem;
     justify-self: flex-end;
 }

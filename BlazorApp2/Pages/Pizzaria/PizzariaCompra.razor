@@ -1,0 +1,126 @@
+﻿@page "/pizza/{PizzaId:int}/buy"
+
+@attribute [Authorize]
+
+@inject IDbContextFactory<PizzaContext> DbFactory
+@inject NavigationManager Nav
+
+
+<div class="row">
+    <div class="col-12">
+        <h3>Confirma a compra?</h3>
+    </div>
+</div>
+
+<EditForm Model="Model" OnValidSubmit="RegistraCompra">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-sm-4">
+            <img src="@Model.ImageUrl"
+                 class="rounded" style="width:100%;height:auto"
+                 alt="@Model.Descricao" />
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Sabor</label>
+                <label class="form-control">@Model.Nome</label>
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <label class="form-control">@Model.Descricao</label>
+            </div>
+            <div class="form-group">
+                <label>Quantidade</label>
+                <InputNumber type="number" class="form-control col-4" @bind-Value="Model.Quantidade" />
+                <ValidationMessage class="invalid-feedback" For="() => Model.Quantidade" />
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-sm-8">
+            <ValidationSummary />
+            <button type="submit" class="btn btn-block btn-success">
+                Comprar
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+@code {
+
+    protected record PizzaModel
+    {
+        [Required(ErrorMessage = "Quantas unidades deseja?")]
+        [Range(1, 3, ErrorMessage = "Quantidade inválida (1 a 3)")]
+        public int Quantidade { get; set; }
+
+        public string Nome { get; set; }
+
+        public string Descricao { get; set; }
+
+
+        public string ImageUrl { get; set; }
+    }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    [Parameter]
+    public int PizzaId { get; set; }
+
+
+    PizzaModel Model { get; set; } = new PizzaModel();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        using var dbContext = DbFactory.CreateDbContext();
+
+        var pizza = await dbContext.Pizzas
+            .Where(c => c.PizzaId == PizzaId)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+
+        Model.Nome = pizza.Nome;
+        Model.Descricao = pizza.Descricao;
+        Model.ImageUrl = pizza.ImageUrl;
+        Model.Quantidade = 1;
+
+    }
+
+    public async Task RegistraCompra()
+    {
+        using var dbContext = DbFactory.CreateDbContext();
+        var auth = await AuthenticationState;
+
+        var pizza = await dbContext.Pizzas
+            .Where(c => c.PizzaId == PizzaId)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+        var usuario = await dbContext
+        .Usuarios
+            .Include(c => c.MinhasPizzas)
+            .Where(c => c.UserName == auth.User.Identity.Name)
+            .FirstOrDefaultAsync();
+
+        for (int i = 1; i <= Model.Quantidade; i++)
+        {
+            usuario.MinhasPizzas.Add(new AppUserPizza()
+            {
+                Pizza = pizza,
+                Usuario = usuario,
+                DataCompra = DateTime.Now
+            });
+        }
+
+        await dbContext.SaveChangesAsync();
+        Nav.NavigateTo("/pizza/compra-realizada");
+
+
+    }
+}

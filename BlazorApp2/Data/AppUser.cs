@@ -9,6 +9,6 @@ namespace BlazorApp2.Data
 {
     public class AppUser : IdentityUser
     {
-        public virtual ICollection<Pizza> MinhasPizzas { get; set; }
+        public virtual ICollection<AppUserPizza> MinhasPizzas { get; set; }
     }
 }

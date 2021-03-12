@@ -31,8 +31,13 @@ namespace BlazorApp2
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<PizzaContext>(
-                option => option.UseSqlite("DataSource=bancopizza.db"));
+            services.AddDbContextFactory<PizzaContext>(
+                option => option.UseNpgsql(Configuration.GetConnectionString("pizza")));
+
+            services.AddScoped<PizzaContext>(
+                    p => p.GetRequiredService<IDbContextFactory<PizzaContext>>()
+                    .CreateDbContext());
+                
 
             services.AddDefaultIdentity<AppUser>()
                     .AddRoles<IdentityRole>()

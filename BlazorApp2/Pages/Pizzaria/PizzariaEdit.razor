@@ -1,6 +1,8 @@
 ﻿@page "/pizza/{PizzaId:int}/edit"
 
-@inject PizzaContext dbContext
+@attribute [Authorize(Policy = "IsAdmin")]
+
+@inject IDbContextFactory<PizzaContext> DbFactory
 @inject NavigationManager navigation
 
 <h3>Edita Pizza</h3>
@@ -97,9 +99,10 @@
 
     protected override void OnInitialized()
     {
+        using var dbContext = DbFactory.CreateDbContext();
         var pizza = dbContext.Pizzas
-            .Where(c => c.PizzaId == PizzaId)
-            .FirstOrDefault();
+        .Where(c => c.PizzaId == PizzaId)
+        .FirstOrDefault();
 
         Model = new EditPizza()
         {
@@ -114,6 +117,7 @@
 
     protected async Task AtualizarPizza()
     {
+        using var dbContext = DbFactory.CreateDbContext();
         Model.IsLoading = true;
         var pizza = dbContext.Pizzas
            .Where(c => c.PizzaId == PizzaId)

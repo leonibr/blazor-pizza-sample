@@ -1,6 +1,6 @@
 ﻿@page "/pizza/{PizzaId:int}/delete"
-
-@inject PizzaContext dbContext
+@attribute [Authorize(Policy = "IsAdmin")]
+@inject IDbContextFactory<PizzaContext> DbFactory
 @inject NavigationManager navigation
 
 <h3>Pizzaria Delete</h3>
@@ -22,9 +22,12 @@
 
     void Exclui()
     {
+        using var dbContext = DbFactory.CreateDbContext();
+
+
         var pizza = dbContext.Pizzas
-         .Where(c => c.PizzaId == PizzaId)
-         .FirstOrDefault();
+             .Where(c => c.PizzaId == PizzaId)
+             .FirstOrDefault();
         dbContext.Pizzas.Remove(pizza);
         dbContext.SaveChanges();
         navigation.NavigateTo("/pizza/lista");

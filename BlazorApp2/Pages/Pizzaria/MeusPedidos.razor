@@ -1,0 +1,72 @@
+﻿@page "/pizza/meuspedidos"
+
+@inject IDbContextFactory<PizzaContext> DbFactory
+
+<h3>Meus Pedidos</h3>
+@if (Usuario != null)
+{
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+
+                <table class="table table-sm table-striped">
+                    <tr>
+                        <th></th>
+                        <th>Data Compra</th>
+                        <th>Sabor</th>
+                        <th>Descrição</th>
+                    </tr>
+
+                    @foreach (var compra in Usuario.MinhasPizzas)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@compra.Pizza.ImageUrl" style="width: 60px" alt="@compra.Pizza.Nome" />
+                            </td>
+                            <td>
+                                @($"{compra.DataCompra:dd/MM/yyyy}")
+                            </td>
+                            <td>
+                                @compra.Pizza.Nome
+                            </td>
+                            <td>
+                                @compra.Pizza.Descricao
+                            </td>
+                        </tr>
+                    }
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td colspan="3">
+                                Total <span class="badge badge-secondary">@Usuario.MinhasPizzas.Count</span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    AppUser Usuario = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var auth = await AuthenticationState;
+
+        using var dbContext = DbFactory.CreateDbContext();
+        Usuario = await dbContext
+                 .Usuarios
+                 .Include(c => c.MinhasPizzas)
+                    .ThenInclude(c => c.Pizza)
+                 .Where(c => c.UserName == auth.User.Identity.Name)
+                 .FirstOrDefaultAsync();
+
+    }
+}

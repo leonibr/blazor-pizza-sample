@@ -12,6 +12,20 @@
                 </li>
             </NavLink>
         </ul>
+        <AuthorizeView>
+            <Authorized>
+                <ul class="list-group">
+                    <NavLink href="/pizza/meuspedidos" class="nav-link">
+                        <li class="list-group-item">
+                            <span class="oi oi-pie-chart"></span> Meus Pedidos
+                        </li>
+                    </NavLink>
+                </ul>
+            </Authorized>
+
+        </AuthorizeView>
+
+
         <AuthorizeView Policy="IsAdmin">
             <Authorized>
                 <ul class="list-group">
@@ -22,7 +36,7 @@
                     </NavLink>
                 </ul>
             </Authorized>
-            
+
         </AuthorizeView>
     </div>
 </div>
